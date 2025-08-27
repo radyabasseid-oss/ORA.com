@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORA CODE ACADEMY - أكاديمية البرمجة المتطورة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #00b4db;
+            --accent: #ff8a00;
+            --dark: #0a1929;
+            --darker: #051221;
+            --light: #f0f7ff;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), #ff2070);
+            --card-bg: rgba(255, 255, 255, 0.07);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --success: #00cc88;
+            --warning: #ffcc00;
+            --danger: #ff4757;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(5, 18, 33, 0.9), rgba(5, 18, 33, 0.9)), 
+                        url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') fixed;
+            background-size: cover;
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* أنماط الصفحات */
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            min-height: 80vh;
+        }
+        
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* أنماط الخلفية التفاعلية */
+        .background-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.2;
+            filter: blur(40px);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            top: 60%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 500px;
+            height: 500px;
+            background: var(--secondary);
+            bottom: -100px;
+            left: 20%;
+            animation-delay: -10s;
+        }
+        
+        .particles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: particleFloat 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 30px) scale(0.9);
+            }
+        }
+        
+        @keyframes particleFloat {
+            from {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            to {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        /* الباركود في الخلفية */
+        .barcode-container {
+            position: fixed;
+            top: 0;
+            right: 15%;
+            height: 100%;
+            z-index: -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.1;
+        }
+        
+        .barcode-line {
+            width: 35px;
+            background: linear-gradient(to bottom, transparent, var(--secondary), transparent);
+            border-radius: 3px;
+            transition: all 0.5s ease;
+        }
+        
+        .barcode-line:nth-child(odd) {
+            height: 100px;
+        }
+        
+        .barcode-line:nth-child(even) {
+            height: 60px;
+        }
+        
+        .barcode-line:nth-child(3n) {
+            height: 140px;
+            background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+        }
+        
+        .barcode-line:nth-child(5n) {
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, #00c9ff, transparent);
+        }
+        
+        .barcode-number {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            z-index: -1;
+        }
+        
+        /* أنماط التنقل */
+        .navbar {
+            background: rgba(10, 25, 41, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.4);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo-text span {
+            font-size: 0.8rem;
+            color: var(--light);
+            opacity: 0.8;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-link {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--secondary);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-btn {
+            background: transparent;
+            border: none;
+            color: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .search-btn:hover {
+            color: var(--secondary);
+        }
+        
+        .cta-button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 180, 219, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 180, 219, 0.6);
+        }
+        
+        /* القسم الرئيسي */
+        .hero {
+            padding: 120px 5% 100px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 138, 0, 0.15);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 138, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #00b4db, #0083b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #c5d5e0;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .primary-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 180, 219, 0.4);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .secondary-btn {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--secondary);
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 180, 219, 0.6);
+        }
+        
+        .secondary-btn:hover {
+            background: rgba(0, 180, 219, 0.1);
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 70px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .stat-text {
+            color: #c5d5e0;
+            font-size: 1rem;
+        }
+        
+        /* أنماط الأقسام العامة */
+        .section {
+            padding: 100px 5%;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--light);
+        }
+        
+        .section-title p {
+            font-size: 1.2rem;
+            color: #c5d5e0;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* أنماط البطاقات */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            background: rgba(0, 180, 219, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover .card-icon {
+            background: var(--gradient);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--light);
+        }
+        
+        .card p {
+            color: #c5d5e0;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+        
+        .card-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .card-link:hover {
+            gap: 12px;
+            color: var(--accent);
+        }
+        
+        /* قسم الدورات */
+        .courses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .course-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .course-header {
+            height: 180px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-header i {
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 2;
+        }
+        
+        .course-header::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg) translateY(-50%);
+            transition: all 0.5s ease;
+        }
+        
+        .course-card:hover .course-header::after {
+            transform: rotate(45deg) translateY(50%);
+        }
+        
+        .course-content {
+            padding: 25px;
+        }
+        
+        .course-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+        
+        .course-content p {
+            color: #c5d5e0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--secondary);
+            font-weight: 500;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* قسم قصة التأسيس */
+        .story-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .story-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .story-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .story-content h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+        
+        .story-content p {
+            color: #c5d5e0;
+            line-height: 1.8;
+        }
+        
+        /* قسم الإحصائيات */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 40px 30px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .stat-text {
+            color: #c5d5e0;
+            font-size: 1.2rem;
+        }
+        
+        /* نموذج الاتصال */
+        .contact-form {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--light);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(0, 180, 219, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 180, 219, 0.4);
+            font-size: 1.1rem;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 180, 219, 0.6);
+        }
+        
+        /* الفوتر */
+        footer {
+            background: rgba(5, 18, 33, 0.95);
+            padding: 80px 5% 40px;
+            border-top: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 3px;
+        }
+        
+        .footer-column p {
+            color: #c5d5e0;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #c5d5e0;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .footer-links a:hover {
+            color: var(--secondary);
+            gap: 16px;
+        }
+        
+        .footer-newsletter {
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .footer-newsletter input {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            outline: none;
+        }
+        
+        .footer-newsletter button {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .footer-newsletter button:hover {
+            transform: translateX(-5px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+            color: #c5d5e0;
+            font-size: 1rem;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 1200px) {
+            .barcode-container {
+                right: 10%;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero h2 {
+                font-size: 2.8rem;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .barcode-container {
+                right: 5%;
+            }
+            
+            .story-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.3rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .primary-btn, .secondary-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 5%;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+            
+            .barcode-container {
+                display: none;
+            }
+            
+            .contact-form {
+                padding: 25px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 70px 5%;
+            }
+            
+            .card, .course-card, .stat-item {
+                padding: 25px;
+            }
+            
+            .hero-stats {
+                gap: 30px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+            
+            .story-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- الخلفية التفاعلية -->
+    <div class="background-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="particles-container" id="particles"></div>
+    </div>
+    
+    <!-- الباركود في الخلفية -->
+    <div class="barcode-container">
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-line"></div>
+        <div class="barcode-number">01</div>
+    </div>
+    
+    <!-- موقع العملاء -->
+    <div id="client-site">
+        <!-- شريط التنقل -->
+        <nav class="navbar">
+            <div class="logo" onclick="showPage('home-page')">
+                <div class="logo-icon">O</div>
+                <div class="logo-text">
+                    <h1>ORA CODE</h1>
+                    <span>ACADEMY</span>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a class="nav-link active" onclick="showPage('home-page')">الرئيسية</a>
+                <a class="nav-link" onclick="showPage('courses-page')">الدورات</a>
+                <a class="nav-link" onclick="showPage('story-page')">قصتنا</a>
+                <a class="nav-link" onclick="showPage('contact-page')">اتصل بنا</a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+                <button class="cta-button" onclick="showPage('contact-page')"><i class="fas fa-user-plus"></i> سجل الآن</button>
+            </div>
+        </nav>
+        
+        <!-- الصفحة الرئيسية -->
+        <div id="home-page" class="page active">
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fas fa-rocket"></i> أكاديمية البرمجة الرائدة
+                    </div>
+                    <h2>انطلق في رحلة تعلم البرمجة مع ORA CODE</h2>
+                    <p>اكتشف عالم البرمجة من خلال دوراتنا المتطورة التي صممها خبراء الصناعة. سواء كنت مبتدئاً أو محترفاً، لدينا ما يناسبك لتطوير مهاراتك البرمجية والوصول إلى أهدافك المهنية.</p>
+                    <div class="hero-buttons">
+                        <button class="primary-btn" onclick="showPage('courses-page')"><i class="fas fa-play-circle"></i> ابدأ التعلم الآن</button>
+                        <button class="secondary-btn" onclick="showPage('contact-page')"><i class="fas fa-eye"></i> استعرض الدورات</button>
+                    </div>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">0</div>
+                            <div class="stat-text">طالب مسجل</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">7</div>
+                            <div class="stat-text">دورة تدريبية</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">0</div>
+                            <div class="stat-text">سنوات خبرة</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-text">رضا العملاء</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-title">
+                    <h2>لماذا تختار ORA CODE؟</h2>
+                    <p>نحن نقدم تجربة تعليمية فريدة تجمع بين الجودة والمرونة والدعم مستمر</p>
+                </div>
+                
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h3>منهجية متطورة</h3>
+                        <p>نقدم أحدث المنهجيات والتقنيات في مجال البرمجة وتطوير البرمجيات.</p>
+                        <a class="card-link">اكتشف المزيد <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-laptop-code"></i></div>
+                        <h3>مشاريع عملية</h3>
+                        <p>طبق ما تتعلمه في مشاريع حقيقية تبني بها portfolio يظهر مهاراتك للعالم.</p>
+                        <a class="card-link">اكتشف المزيد <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-users"></i></div>
+                        <h3>مجتمع داعم</h3>
+                        <p>انضم إلى مجتمع من المتعلمين والمطورين حيث تتبادل المعرفة والخبرات.</p>
+                        <a class="card-link">اكتشف المزيد <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-title">
+                    <h2>دوراتنا الأكثر طلباً</h2>
+                    <p>اختر من بين مجموعة واسعة من الدورات المصممة لتأهيلك لسوق العمل</p>
+                </div>
+                
+                <div class="courses-container">
+                    <div class="course-card" onclick="showPage('courses-page')">
+                        <div class="course-header">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Frontend Development</h3>
+                            <p>تعلم تطوير واجهات المستخدم باستخدام أحدث تقنيات HTML, CSS, و JavaScript.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 10 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> مبتدئ</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card" onclick="showPage('courses-page')">
+                        <div class="course-header">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Backend Development</h3>
+                            <p>أتقن تطوير تطبيقات الخادم باستخدام Node.js، Python، وقواعد البيانات.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 12 أسبوع</span>
+                                <span><i class="fas fa-tags"></i> متقدم</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card" onclick="showPage('courses-page')">
+                        <div class="course-header">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Flutter Development</h3>
+                            <p>أنشئ تطبيقات جوال cross-platform باستخدام إطار عمل Flutter.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 10 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> متوسط</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="primary-btn" onclick="showPage('courses-page')"><i class="fas fa-book"></i> عرض جميع الدورات</button>
+                </div>
+            </section>
+        </div>
+        
+        <!-- صفحة الدورات -->
+        <div id="courses-page" class="page">
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>دوراتنا التدريبية</h2>
+                    <p>اكتشف مجموعة الدورات الشاملة التي صممها خبراؤنا لمساعدتك على إتقان مهارات البرمجة والتكنولوجيا</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-title">
+                    <h2>جميع الدورات المتاحة</h2>
+                    <p>اختر المسار الذي يناسب أهدافك المهنية وابدأ رحلة التعلم اليوم</p>
+                </div>
+                
+                <div class="courses-container">
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Frontend Development</h3>
+                            <p>تعلم تطوير واجهات المستخدم باستخدام HTML, CSS, JavaScript, React.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 10 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> مبتدئ</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Backend Development</h3>
+                            <p>أتقن تطوير تطبيقات الخادم باستخدام Node.js, Express, وقواعد البيانات.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 12 أسبوع</span>
+                                <span><i class="fas fa-tags"></i> متقدم</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>UI/UX Design</h3>
+                            <p>تعلم تصميم تجارب المستخدم وواجهات التطبيقات بشكل إحترافي.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 8 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> متوسط</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Flutter Development</h3>
+                            <p>أنشئ تطبيقات جوال cross-platform باستخدام إطار عمل Flutter.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 10 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> متوسط</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Data Analysis</h3>
+                            <p>أتقن تحليل البيانات باستخدام Python, Pandas, وتقنيات Visualization.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 10 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> متقدم</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Python Programming</h3>
+                            <p>تعلم البرمجة باستخدام Python من الأساسيات إلى المستوى المتقدم.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 8 أسابيع</span>
+                                <span><i class="fas fa-tags"></i> مبتدئ</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Web Development</h3>
+                            <p>تعلم تطوير مواقع ويب كاملة من Frontend إلى Backend.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 14 أسبوع</span>
+                                <span><i class="fas fa-tags"></i> متقدم</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="course-card">
+                        <div class="course-header">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="course-content">
+                            <h3>Machine Learning</h3>
+                            <p>أنشئ نماذج تعلم آلي باستخدام Python وتقنيات الذكاء الاصطناعي.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 12 أسبوع</span>
+                                <span><i class="fas fa-tags"></i> متقدم</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- صفحة قصة التأسيس -->
+        <div id="story-page" class="page">
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>قصتنا</h2>
+                    <p>رؤية ORA CODE: بناء عائلة من المبرمجين المتميزين</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-title">
+                    <h2>رحلة ORA CODE</h2>
+                    <p>من الفكرة إلى تأسيس أول أكاديمية تعاونية للبرمجة في عام 2025</p>
+                </div>
+                
+                <div class="story-container">
+                    <div class="story-card">
+                        <div class="story-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="story-content">
+                            <h3>بداية الرؤية (2025)</h3>
+                            <p>بدأت رحلة ORA CODE بفكرة طموحة في بداية عام 2025، حيث لاحظ المؤسسون الحاجة الماسة لمجتمع تعاوني حقيقي في مجال البرمجة. كان الهدف إنشاء أكاديمية لا تركز فقط على التعليم التقني، بل على بناء عائلة من المبرمجين المتميزين الذين يدعمون بعضهم البعض.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <div class="story-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <div class="story-content">
+                            <h3>الفكرة التعاونية</h3>
+                            <p>نؤمن في ORA CODE أن قوة البرمجة تكمن في التعاون وتبادل الخبرات. لذلك صممنا نموذجاً تعليمياً فريداً يجمع بين التعليم عالي الجودة وبناء مجتمع متعاون. نحن لا نعلمك البرمجة فقط، بل نعلمك كيف تكون جزءاً من عائلة تقنية تدعم بعضها لتحقيق النجاح الجماعي.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <div class="story-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="story-content">
+                            <h3>بناء العائلة</h3>
+                            <p>نسعى لإنشاء أكبر عائلة من المبرمجين المتميزين في المنطقة، حيث يصبح كل خريج لدينا جزءاً من شبكة دعم مستمرة. نؤمن بأن نجاح طالب واحد هو نجاح للجميع، لذلك نعمل على توفير بيئة تشجع على التعاون وتبادل الخبرات بين جميع الأعضاء.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card">
+                        <div class="story-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="story-content">
+                            <h3>رؤية المستقبل</h3>
+                            <p>بحلول عام 2030، نتطلع لأن تكون ORA CODE أكبر مجتمع تعاوني للمبرمجين في المنطقة، حيث يضم آلاف المبرمجين المتميزين الذين يشكلون معاً قوة تقنية هائلة. نعمل على تطوير منصات ومساحات تعاونية مبتكرة لضمان استمرارية التواصل والدعم بين جميع أعضاء العائلة.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- صفحة الاتصال -->
+        <div id="contact-page" class="page">
+            <section class="hero">
+                <div class="hero-content">
+                    <h2>اتصل بنا</h2>
+                    <p>نحن هنا للإجابة على جميع استفساراتك ومساعدتك في بدء رحلتك التعليمية</p>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-title">
+                    <h2>تواصل معنا</h2>
+                    <p>اختر طريقة التواصل التي تناسبك وسنكون سعداء بمساعدتك</p>
+                </div>
+                
+                <div class="cards-container">
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-envelope"></i></div>
+                        <h3>البريد الإلكتروني</h3>
+                        <p>ارسل لنا رسالة وسنرد عليك في غضون 24 ساعة</p>
+                        <a class="card-link">oracode224@gmail.com <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-phone"></i></div>
+                        <h3>الهاتف</h3>
+                        <p>اتصل بنا خلال ساعات العمل من الأحد إلى الخميس</p>
+                        <a class="card-link">01500911076 <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h3>المقر الرئيسي</h3>
+                        <p>زورنا في مقرنا الرئيسي في المنصورة، الدقهلية</p>
+                        <a class="card-link">مصر - المنصورة - الدقهلية <i class="fas fa-arrow-left"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form" style="margin-top: 60px;">
+                    <h3 style="text-align: center; margin-bottom: 30px;">أرسل لنا رسالة</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">الاسم الكامل</label>
+                            <input type="text" id="name" class="form-control" placeholder="أدخل اسمك الكامل" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" id="email" class="form-control" placeholder="أدخل بريدك الإلكتروني" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">الموضوع</label>
+                            <input type="text" id="subject" class="form-control" placeholder="موضوع الرسالة" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">الرسالة</label>
+                            <textarea id="message" class="form-control" placeholder="أدخل رسالتك هنا" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">إرسال الرسالة</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+        
+        <!-- الفوتر -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>عن ORA CODE</h3>
+                    <p>أكاديمية ORA CODE هي منصة رائدة في مجال تعليم البرمجة وتطوير المهارات الرقمية، نهدف إلى تمكين الأفراد من دخول عالم التكنولوجيا بثقة.</p>
+                    <div class="footer-newsletter">
+                        <input type="email" placeholder="اشترك في النشرة البريدية">
+                        <button>اشترك</button>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><a onclick="showPage('home-page')"><i class="fas fa-angle-left"></i> الرئيسية</a></li>
+                        <li><a onclick="showPage('courses-page')"><i class="fas fa-angle-left"></i> الدورات</a></li>
+                        <li><a onclick="showPage('story-page')"><i class="fas fa-angle-left"></i> قصتنا</a></li>
+                        <li><a onclick="showPage('contact-page')"><i class="fas fa-angle-left"></i> اتصل بنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>الدورات</h3>
+                    <ul class="footer-links">
+                        <li><a onclick="showPage('courses-page')"><i class="fas fa-angle-left"></i> Frontend Development</a></li>
+                        <li><a onclick="showPage('courses-page')"><i class="fas fa-angle-left"></i> Backend Development</a></li>
+                        <li><a onclick="showPage('courses-page')"><i class="fas fa-angle-left"></i> UI/UX Design</a></li>
+                        <li><a onclick="showPage('courses-page')"><i class="fas fa-angle-left"></i> Flutter Development</a></li>
+                        <li><a onclick="showPage('courses-page')"><i class="fas fa-angle-left"></i> Data Analysis</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>اتصل بنا</h3>
+                    <ul class="footer-links">
+                        <li><a><i class="fas fa-map-marker-alt"></i> مصر - المنصورة - الدقهلية</a></li>
+                        <li><a><i class="fas fa-phone"></i> 01500911076</a></li>
+                        <li><a><i class="fas fa-envelope"></i> oracode224@gmail.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>© 2025 ORA CODE ACADEMY. جميع الحقوق محفوظة</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // إنشاء الجسيمات المتحركة في الخلفية
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // أحجام عشوائية
+                const size = Math.random() * 5 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // مواقع عشوائية
+                const posX = Math.random() * 100;
+                particle.style.left = `${posX}%`;
+                
+                // تأخيرات عشوائية
+                const delay = Math.random() * 20;
+                particle.style.animationDelay = `${delay}s`;
+                
+                // مدة عشوائية
+                const duration = Math.random() * 10 + 15;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // إضافة الجسيم
+                container.appendChild(particle);
+            }
+        }
+        
+        // تأثيرات تفاعلية للباركود
+        document.addEventListener('mousemove', (e) => {
+            const barcodeLines = document.querySelectorAll('.barcode-line');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+           
+            
+            const floatingElements = document.querySelectorAll('.floating-element');
+            floatingElements.forEach((element, index) => {
+                const speed = 0.01 + (index * 0.01);
+                const offsetX = (mouseX - 0.5) * 60 * speed;
+                const offsetY = (mouseY - 0.5) * 60 * speed;
+                
+                element.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(1.2)`;
+            });
+        });
+        
+        // تأثير التظليل لشريط التنقل عند التمرير
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(10, 25, 41, 0.95)';
+                navbar.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+            } else {
+                navbar.style.background = 'rgba(10, 25, 41, 0.8)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+        
+        // إدارة الصفحات
+        function showPage(pageId) {
+            // إخفاء جميع الصفحات
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // إزالة النشاط من جميع روابط التنقل
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // إظهار الصفحة المطلوبة
+            document.getElementById(pageId).classList.add('active');
+            
+            // إضافة النشاط لرابط التنقل المناسب
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.textContent === 'الرئيسية' && pageId === 'home-page') {
+                    link.classList.add('active');
+                } else if (link.textContent === 'الدورات' && pageId === 'courses-page') {
+                    link.classList.add('active');
+                } else if (link.textContent === 'قصتنا' && pageId === 'story-page') {
+                    link.classList.add('active');
+                } else if (link.textContent === 'اتصل بنا' && pageId === 'contact-page') {
+                    link.classList.add('active');
+                }
+            });
+            
+            // التمرير إلى الأعلى
+            window.scrollTo(0, 0);
+        }
+        
+        // معالجة نموذج الاتصال
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('تم إرسال رسالتك بنجاح! سنقوم بالرد عليك في أقرب وقت ممكن.');
+            this.reset();
+        });
+        
+        // تهيئة عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            
+            // جعل جميع العناصر القابلة للنقر لها مؤشر يدوي
+            document.querySelectorAll('button, .card, .course-card, .nav-link, .logo').forEach(element => {
+                element.style.cursor = 'pointer';
+            });
+        });
+    </script>
+</body>
+</html>
